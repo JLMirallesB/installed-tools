@@ -1,11 +1,8 @@
 #!/bin/bash
 
 # ================================================
-#   INSTALLED TOOLS / EINES INSTAL·LADES / HERRAMIENTAS INSTALADAS
-#
-#   Usage:  bash tools.sh               → English (default)
-#           bash tools.sh --lang ca     → Català
-#           bash tools.sh --lang es     → Español
+#   INSTALLED TOOLS INSPECTOR
+#   github.com/JLMirallesB/installed-tools
 # ================================================
 
 # ── COLORS ────────────────────────────────────
@@ -17,8 +14,8 @@ RED='\033[0;31m'
 GRAY='\033[0;37m'
 NC='\033[0m'
 
-# ── LANGUAGE ──────────────────────────────────
-IDIOMA="en"
+# ── CHECK FOR --lang FLAG (skips menu) ────────
+IDIOMA=""
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --lang) IDIOMA="$2"; shift 2 ;;
@@ -27,6 +24,44 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# ── INTRO BANNER ──────────────────────────────
+clear
+echo ""
+echo -e "${BOLD}${CYAN}   ╔═══════════════════════════════════════════╗${NC}"
+echo -e "${BOLD}${CYAN}   ║                                           ║${NC}"
+echo -e "${BOLD}${CYAN}   ║    ▸▸  INSTALLED TOOLS INSPECTOR  ◂◂     ║${NC}"
+echo -e "${BOLD}${CYAN}   ║                                           ║${NC}"
+echo -e "${BOLD}${CYAN}   ╚═══════════════════════════════════════════╝${NC}"
+echo ""
+
+# ── LANGUAGE MENU ─────────────────────────────
+if [[ -z "$IDIOMA" ]]; then
+    echo -e "   ${BOLD}🌐  Select language / Tria l'idioma / Elige idioma${NC}"
+    echo ""
+    echo -e "   ${CYAN}┌─────────────────────────────────┐${NC}"
+    echo -e "   ${CYAN}│${NC}   ${BOLD}1${NC}  ›  English                ${CYAN}│${NC}"
+    echo -e "   ${CYAN}│${NC}   ${BOLD}2${NC}  ›  Català                 ${CYAN}│${NC}"
+    echo -e "   ${CYAN}│${NC}   ${BOLD}3${NC}  ›  Español                ${CYAN}│${NC}"
+    echo -e "   ${CYAN}└─────────────────────────────────┘${NC}"
+    echo ""
+    printf "   ${BOLD}›${NC}  "
+    read -r CHOICE
+    case "$CHOICE" in
+        2) IDIOMA="ca" ;;
+        3) IDIOMA="es" ;;
+        *) IDIOMA="en" ;;
+    esac
+    clear
+    echo ""
+    echo -e "${BOLD}${CYAN}   ╔═══════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${CYAN}   ║                                           ║${NC}"
+    echo -e "${BOLD}${CYAN}   ║    ▸▸  INSTALLED TOOLS INSPECTOR  ◂◂     ║${NC}"
+    echo -e "${BOLD}${CYAN}   ║                                           ║${NC}"
+    echo -e "${BOLD}${CYAN}   ╚═══════════════════════════════════════════╝${NC}"
+    echo ""
+fi
+
+# ── LANGUAGE STRINGS ──────────────────────────
 case "$IDIOMA" in
     ca)
         T_TITLE="EINES INSTAL·LADES"
@@ -93,50 +128,53 @@ esac
 # ── FUNCTIONS ─────────────────────────────────
 seccion() {
     echo ""
-    echo -e "${CYAN}${BOLD}▶ $1${NC}"
-    echo -e "${GRAY}  ────────────────────────────────────────${NC}"
+    echo -e "   ${BOLD}${CYAN}▌${NC} ${BOLD}$1${NC}"
+    echo -e "   ${GRAY}────────────────────────────────────────${NC}"
 }
 
 ok() {
-    printf "  ${GREEN}✓${NC} ${BOLD}%-20s${NC} %s\n" "$1" "$2"
+    printf "   ${GREEN}✓${NC} ${BOLD}%-20s${NC} %s\n" "$1" "$2"
 }
 
 no() {
-    printf "  ${RED}✗${NC} ${GRAY}%-20s %s${NC}\n" "$1" "$T_NOT_INST"
+    printf "   ${RED}✗${NC} ${GRAY}%-20s %s${NC}\n" "$1" "$T_NOT_INST"
 }
 
 cmd_existe() {
     command -v "$1" &> /dev/null
 }
 
-# ── HEADER ────────────────────────────────────
-echo ""
-echo -e "${BOLD}${CYAN}┌─────────────────────────────────────────┐${NC}"
-printf "${BOLD}${CYAN}│  %-41s│${NC}\n" "$T_TITLE"
-printf "${BOLD}${CYAN}│  %-41s│${NC}\n" "$(date '+%d/%m/%Y  %H:%M')"
-echo -e "${BOLD}${CYAN}└─────────────────────────────────────────┘${NC}"
+# ── MAIN HEADER ───────────────────────────────
+MACOS_VER="$(sw_vers -productVersion)"
+ARCH="$(uname -m)"
+DATE_STR="$(date '+%d/%m/%Y · %H:%M')"
+
+echo -e "   ${BOLD}${CYAN}╔═══════════════════════════════════════════╗${NC}"
+printf "   ${BOLD}${CYAN}║${NC}  ${BOLD}%-41s${BOLD}${CYAN}║${NC}\n" "$T_TITLE"
+printf "   ${BOLD}${CYAN}║${NC}  ${GRAY}%-41s${BOLD}${CYAN}║${NC}\n" "$DATE_STR  ·  macOS $MACOS_VER"
+echo -e "   ${BOLD}${CYAN}╚═══════════════════════════════════════════╝${NC}"
 
 # ── SYSTEM ────────────────────────────────────
 seccion "$T_SYSTEM"
-ok "macOS" "$(sw_vers -productVersion)  ($(uname -m))"
-ok "Xcode CLT" "$(xcode-select -p 2>/dev/null | grep -q CommandLine && echo 'installed' || echo $T_NOT_INST)"
+ok "macOS" "$MACOS_VER  ($ARCH)"
+ok "Xcode CLT" "$(xcode-select -p 2>/dev/null | grep -q CommandLine && echo 'installed' || echo "$T_NOT_INST")"
 
 # ── BASIC TOOLS ───────────────────────────────
 seccion "$T_BASIC"
-cmd_existe git  && ok "git"           "$(git --version | awk '{print $3}')"              || no "git"
-cmd_existe curl && ok "curl"          "$(curl --version | head -1 | awk '{print $2}')"   || no "curl"
-cmd_existe wget && ok "wget"          "$(wget --version 2>&1 | head -1 | awk '{print $3}')" || no "wget"
-cmd_existe code && ok "VS Code"       "$(code --version 2>/dev/null | head -1)"          || no "VS Code"
-cmd_existe ssh  && ok "ssh"           "$(ssh -V 2>&1 | awk '{print $1}')"                || no "ssh"
+cmd_existe git  && ok "git"     "$(git --version | awk '{print $3}')"              || no "git"
+cmd_existe curl && ok "curl"    "$(curl --version | head -1 | awk '{print $2}')"   || no "curl"
+cmd_existe wget && ok "wget"    "$(wget --version 2>&1 | head -1 | awk '{print $3}')" || no "wget"
+cmd_existe code && ok "VS Code" "$(code --version 2>/dev/null | head -1)"          || no "VS Code"
+cmd_existe ssh  && ok "ssh"     "$(ssh -V 2>&1 | awk '{print $1}')"                || no "ssh"
 
 # ── HOMEBREW ──────────────────────────────────
 seccion "$T_HOMEBREW"
 if cmd_existe brew; then
     ok "brew" "$(brew --version | head -1 | awk '{print $2}')"
     echo ""
-    echo -e "  ${YELLOW}${T_BREW_PKGS}${NC}"
+    echo -e "   ${YELLOW}${T_BREW_PKGS}${NC}"
     brew list --versions 2>/dev/null | sort | while IFS= read -r line; do
-        printf "    ${GRAY}•${NC} %s\n" "$line"
+        printf "     ${GRAY}•${NC} %s\n" "$line"
     done
 else
     no "brew"
@@ -149,9 +187,9 @@ if cmd_existe python3; then
     if cmd_existe pip3; then
         ok "pip3" "$(pip3 --version 2>&1 | awk '{print $2}')"
         echo ""
-        echo -e "  ${YELLOW}${T_PIP_PKGS}${NC}"
+        echo -e "   ${YELLOW}${T_PIP_PKGS}${NC}"
         pip3 list 2>/dev/null | tail -n +3 | while IFS= read -r line; do
-            printf "    ${GRAY}•${NC} %s\n" "$line"
+            printf "     ${GRAY}•${NC} %s\n" "$line"
         done
     else
         no "pip3"
@@ -166,9 +204,9 @@ if cmd_existe uv; then
     ok "uv"  "$(uv --version 2>&1 | awk '{print $2}')"
     ok "uvx" "$T_UV_INCL"
     echo ""
-    echo -e "  ${YELLOW}${T_UV_TOOLS}${NC}"
+    echo -e "   ${YELLOW}${T_UV_TOOLS}${NC}"
     uv tool list 2>/dev/null | while IFS= read -r line; do
-        printf "    ${GRAY}•${NC} %s\n" "$line"
+        printf "     ${GRAY}•${NC} %s\n" "$line"
     done
 else
     no "uv / uvx"
@@ -183,9 +221,9 @@ if cmd_existe node; then
     cmd_existe pnpm && ok "pnpm" "$(pnpm --version)" || no "pnpm"
     cmd_existe yarn && ok "yarn" "$(yarn --version)" || no "yarn"
     echo ""
-    echo -e "  ${YELLOW}${T_NPM_PKGS}${NC}"
+    echo -e "   ${YELLOW}${T_NPM_PKGS}${NC}"
     npm list -g --depth=0 2>/dev/null | tail -n +2 | while IFS= read -r line; do
-        printf "    ${GRAY}•${NC} %s\n" "$line"
+        printf "     ${GRAY}•${NC} %s\n" "$line"
     done
 else
     no "node"
@@ -197,38 +235,38 @@ cmd_existe ruby && ok "ruby" "$(ruby --version | awk '{print $2}')" || no "ruby"
 cmd_existe gem  && ok "gem"  "$(gem --version)"                     || no "gem"
 if cmd_existe gem; then
     echo ""
-    echo -e "  ${YELLOW}${T_GEM_PKGS}${NC}"
+    echo -e "   ${YELLOW}${T_GEM_PKGS}${NC}"
     gem list 2>/dev/null | while IFS= read -r line; do
-        printf "    ${GRAY}•${NC} %s\n" "$line"
+        printf "     ${GRAY}•${NC} %s\n" "$line"
     done
 fi
 
 # ── AI TOOLS (CLI) ────────────────────────────
 seccion "$T_AI"
-cmd_existe claude  && ok "Claude Code"  "$(claude --version 2>&1 | head -1)"           || no "Claude Code"
-cmd_existe codex   && ok "Codex"        "$(codex --version 2>&1 | head -1)"            || no "Codex"
-cmd_existe gemini  && ok "Gemini CLI"   "$(gemini --version 2>&1 | head -1)"           || no "Gemini CLI"
-cmd_existe aider   && ok "aider"        "$(aider --version 2>&1 | head -1)"            || no "aider"
-cmd_existe ollama  && ok "Ollama"       "$(ollama --version 2>&1 | head -1)"           || no "Ollama"
-cmd_existe sgpt    && ok "sgpt"         "$(sgpt --version 2>&1 | head -1)"             || no "sgpt"
-cmd_existe llm     && ok "llm"          "$(llm --version 2>&1 | head -1)"              || no "llm"
-cmd_existe fabric  && ok "fabric"       "$(fabric --version 2>&1 | head -1)"           || no "fabric"
+cmd_existe claude && ok "Claude Code" "$(claude --version 2>&1 | head -1)"  || no "Claude Code"
+cmd_existe codex  && ok "Codex"       "$(codex --version 2>&1 | head -1)"   || no "Codex"
+cmd_existe gemini && ok "Gemini CLI"  "$(gemini --version 2>&1 | head -1)"  || no "Gemini CLI"
+cmd_existe aider  && ok "aider"       "$(aider --version 2>&1 | head -1)"   || no "aider"
+cmd_existe ollama && ok "Ollama"      "$(ollama --version 2>&1 | head -1)"  || no "Ollama"
+cmd_existe sgpt   && ok "sgpt"        "$(sgpt --version 2>&1 | head -1)"    || no "sgpt"
+cmd_existe llm    && ok "llm"         "$(llm --version 2>&1 | head -1)"     || no "llm"
+cmd_existe fabric && ok "fabric"      "$(fabric --version 2>&1 | head -1)"  || no "fabric"
 
 # ── OTHER ─────────────────────────────────────
 seccion "$T_OTHERS"
-cmd_existe docker         && ok "docker"      "$(docker --version | awk '{print $3}' | tr -d ',')"          || no "docker"
-cmd_existe docker-compose && ok "docker-comp" "$(docker-compose --version | awk '{print $4}' | tr -d ',')"  || no "docker-compose"
-cmd_existe ffmpeg         && ok "ffmpeg"      "$(ffmpeg -version 2>&1 | head -1 | awk '{print $3}')"        || no "ffmpeg"
-cmd_existe jq             && ok "jq"          "$(jq --version)"                                             || no "jq"
-cmd_existe make           && ok "make"        "$(make --version | head -1 | awk '{print $3}')"              || no "make"
-cmd_existe rustc          && ok "rust"        "$(rustc --version | awk '{print $2}')"                       || no "rust"
-cmd_existe go             && ok "go"          "$(go version | awk '{print $3}')"                            || no "go"
-cmd_existe java           && ok "java"        "$(java --version 2>&1 | head -1)"                            || no "java"
+cmd_existe docker         && ok "docker"      "$(docker --version | awk '{print $3}' | tr -d ',')"         || no "docker"
+cmd_existe docker-compose && ok "docker-comp" "$(docker-compose --version | awk '{print $4}' | tr -d ',')" || no "docker-compose"
+cmd_existe ffmpeg         && ok "ffmpeg"      "$(ffmpeg -version 2>&1 | head -1 | awk '{print $3}')"       || no "ffmpeg"
+cmd_existe jq             && ok "jq"          "$(jq --version)"                                            || no "jq"
+cmd_existe make           && ok "make"        "$(make --version | head -1 | awk '{print $3}')"             || no "make"
+cmd_existe rustc          && ok "rust"        "$(rustc --version | awk '{print $2}')"                      || no "rust"
+cmd_existe go             && ok "go"          "$(go version | awk '{print $3}')"                           || no "go"
+cmd_existe java           && ok "java"        "$(java --version 2>&1 | head -1)"                           || no "java"
 
 # ── FOOTER ────────────────────────────────────
 echo ""
-echo -e "${GRAY}  ${T_SAVE}${NC}"
-echo -e "${GRAY}  bash tools.sh > tools-list.txt${NC}"
-echo ""
-echo -e "${BOLD}${CYAN}─────────────────────────────────────────────${NC}"
+echo -e "   ${BOLD}${CYAN}╔═══════════════════════════════════════════╗${NC}"
+printf  "   ${BOLD}${CYAN}║${NC}  ${GRAY}%-41s${BOLD}${CYAN}║${NC}\n" "$T_SAVE"
+printf  "   ${BOLD}${CYAN}║${NC}  ${GRAY}%-41s${BOLD}${CYAN}║${NC}\n" "bash tools.sh --lang $IDIOMA > list.txt"
+echo -e "   ${BOLD}${CYAN}╚═══════════════════════════════════════════╝${NC}"
 echo ""
