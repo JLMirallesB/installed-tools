@@ -43,6 +43,7 @@ case "$IDIOMA" in
         T_NPM_PKGS="Paquets npm globals:"
         T_RUBY="RUBY"
         T_GEM_PKGS="Gems instal·lades:"
+        T_AI="EINES D'IA (CLI)"
         T_OTHERS="ALTRES"
         T_NOT_INST="no instal·lat"
         T_SAVE="Per desar el llistat en un fitxer:"
@@ -62,6 +63,7 @@ case "$IDIOMA" in
         T_NPM_PKGS="Paquetes npm globales:"
         T_RUBY="RUBY"
         T_GEM_PKGS="Gems instaladas:"
+        T_AI="HERRAMIENTAS DE IA (CLI)"
         T_OTHERS="OTROS"
         T_NOT_INST="no instalado"
         T_SAVE="Para guardar el listado en un archivo:"
@@ -81,6 +83,7 @@ case "$IDIOMA" in
         T_NPM_PKGS="Global npm packages:"
         T_RUBY="RUBY"
         T_GEM_PKGS="Installed gems:"
+        T_AI="AI TOOLS (CLI)"
         T_OTHERS="OTHER"
         T_NOT_INST="not installed"
         T_SAVE="To save the list to a file:"
@@ -199,6 +202,17 @@ if cmd_existe gem; then
         printf "    ${GRAY}•${NC} %s\n" "$line"
     done
 fi
+
+# ── AI TOOLS (CLI) ────────────────────────────
+seccion "$T_AI"
+cmd_existe claude  && ok "Claude Code"  "$(claude --version 2>&1 | head -1)"           || no "Claude Code"
+cmd_existe codex   && ok "Codex"        "$(codex --version 2>&1 | head -1)"            || no "Codex"
+cmd_existe gemini  && ok "Gemini CLI"   "$(gemini --version 2>&1 | head -1)"           || no "Gemini CLI"
+cmd_existe aider   && ok "aider"        "$(aider --version 2>&1 | head -1)"            || no "aider"
+cmd_existe ollama  && ok "Ollama"       "$(ollama --version 2>&1 | head -1)"           || no "Ollama"
+cmd_existe sgpt    && ok "sgpt"         "$(sgpt --version 2>&1 | head -1)"             || no "sgpt"
+cmd_existe llm     && ok "llm"          "$(llm --version 2>&1 | head -1)"              || no "llm"
+cmd_existe fabric  && ok "fabric"       "$(fabric --version 2>&1 | head -1)"           || no "fabric"
 
 # ── OTHER ─────────────────────────────────────
 seccion "$T_OTHERS"
