@@ -22,14 +22,14 @@ Available in **English**, **Català** and **Español**.
 ## Installation
 
 ```bash
-curl -O https://raw.githubusercontent.com/YOUR_USERNAME/tools.sh/main/tools.sh
+curl -O https://raw.githubusercontent.com/JLMirallesB/installed-tools/main/tools.sh
 chmod +x tools.sh
 ```
 
 Or clone the repo:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/tools.sh
+git clone https://github.com/JLMirallesB/installed-tools
 cd tools.sh
 chmod +x tools.sh
 ```
