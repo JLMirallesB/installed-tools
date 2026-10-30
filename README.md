@@ -10,15 +10,26 @@ Available in **English**, **Català** and **Español** — chosen interactively 
 
 ## What it shows
 
-- **System** — macOS version, architecture
+- **System** — macOS version, architecture, free disk space
 - **Basic tools** — git, curl, wget, VS Code, ssh
-- **Homebrew** — all installed packages with versions
-- **Python** — python3, pip3 and all installed packages
+- **Homebrew** — what you installed on request (dependencies are just counted) and apps (casks)
+- **Python** — every interpreter on the machine (macOS, Homebrew, uv, pyenv, python.org, conda), pip packages and packages installed with `pip install --user`
+- **Virtual environments** — every Python environment in your home folder, sorted by size, flagging heavy libraries (torch, tensorflow, mlx, transformers…) and warning when several environments carry their own copy
 - **uv / uvx** — version and installed tools
-- **Node.js / npm** — node, npm, npx, pnpm, yarn and global packages
-- **Ruby** — ruby, gem and installed gems
+- **Node.js / npm** — node, npm, npx, pnpm, yarn, global packages, and how much your projects' `node_modules` folders take up
+- **Ruby** — ruby, gem and installed gems (the system Ruby's bundled gems are only counted)
 - **AI tools (CLI)** — Claude Code, Codex, Gemini CLI, Ollama, aider, llm, fabric...
+- **AI models** — Ollama, Hugging Face, Whisper and LM Studio models stored locally, with sizes
+- **Caches** — uv, npm, pip, Homebrew, Yarn, pnpm, Go, Cargo… with their size and the command that cleans each one
 - **Other** — docker, ffmpeg, jq, make, rust, go, java
+
+The script **only reads**: it never installs, deletes or cleans anything. Cleaning commands are shown so you can decide.
+
+### Why it shows sizes
+
+Coding assistants and tutorials often install things for each project: a new virtual environment here, a model download there. After a while the same heavy library (PyTorch is about 0.5 GB per copy) may live in several environments, and caches may take many gigabytes. The environments, models and caches sections are there to make that visible.
+
+Searching your home folder takes a few seconds (around 20–30 s on a busy machine).
 
 ---
 
@@ -109,11 +120,22 @@ The script gracefully skips any tool that is not installed — no errors, no cra
    ✓ macOS               26.3  (arm64)
    ✓ Xcode CLT           installed
 
-   ▌ AI TOOLS (CLI)
+   ▌ VIRTUAL ENVIRONMENTS (Python)
    ────────────────────────────────────────
-   ✓ Claude Code         2.1.42
-   ✓ Codex               codex-cli 0.101.0
-   ✗ Gemini CLI          not installed
+     •   1.3G  py3.12  ~/projects/audio/.venv torch
+     •   0.9G  py3.12  ~/projects/tts/.venv torch transformers
+     •   410M  py3.11  ~/experiments/pitch/.venv
+   ⚠  2 environments include torch (each with its own copy)
+
+   ▌ AI MODELS (local)
+   ────────────────────────────────────────
+   ✓ Ollama               9.6G  (~/.ollama/models)
+     •  9.6GB  gemma4:latest
+
+   ▌ CACHES (safe to clean)
+   ────────────────────────────────────────
+   ✓ uv                    4.2G  uv cache prune
+   ✓ npm                   1.1G  npm cache clean --force
    ...
 ```
 
