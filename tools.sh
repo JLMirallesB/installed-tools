@@ -3,6 +3,7 @@
 # ================================================
 #   INSTALLED TOOLS INSPECTOR
 #   github.com/JLMirallesB/installed-tools
+#   © 2026 José Luis Miralles Bono · AGPL v3
 # ================================================
 
 # ── COLORS ────────────────────────────────────

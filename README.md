@@ -141,6 +141,19 @@ The script gracefully skips any tool that is not installed — no errors, no cra
 
 ---
 
+## Author
+
+**José Luis Miralles Bono** · [jlmirall.es](https://jlmirall.es) · joseluismirallesbono@gmail.com ·
+☕ [Buy me a horchata](https://ko-fi.com/miralles)
+
+More info (in Spanish): [¿Qué tengo instalado en este cacharro?](https://elpulpoenelvaso.jlmirall.es/?p=616)
+
 ## License
 
-MIT — use it, share it, adapt it.
+© 2026 José Luis Miralles Bono
+
+- **Code** (`tools.sh`): [GNU AGPL v3](LICENSE) — use it, share it, adapt it; if you publish a modified
+  version, keep the same license and share its source.
+- **Documentation:** [CC BY-SA 4.0](LICENSE-CONTENIDOS).
+
+Versions published before 7 November 2026 were released under the MIT license and keep it.
